@@ -29,7 +29,7 @@ class ClientData {
 public:
   int sock = 0, valread, client_fd;
   struct sockaddr_in serv_addr;
-  char buffer[1024] = {0}, message[1024] = {0}, type[1024] = {0};
+  char buffer[1024] = {0}, message[1024] = {0}, type[1024] = {0}, c_msg[1024] = {0};
   std::string msg, strType;
 };
 
@@ -38,7 +38,7 @@ ClientData cd;
 
 int printBoard() {
   for (int i = 0; i < 9; i++) {
-    std::cout << cd.buffer[i];
+    std::cout << cd.c_msg[i];
     if (i == 2 || i == 5 || i == 8) {
       std::cout << "\n";
     }
@@ -81,20 +81,11 @@ int read(){
   cd.valread = read(cd.sock, cd.buffer, 1024);
   bool done = false;
   int i = 0;
-  char msg[1024];
   while(!done){
     if(cd.buffer[i] == ' '){
-      while (!done) {
-	cd.msg += cd.buffer[i];
-	msg[i] = cd.buffer[i];
-	i++;
 
-	if(cd.buffer[i] == ' '){
-	  for(int i = 0; i < 1024; i++){
-	    cd.buffer[i] = msg[i];
-	  }
-	  break;
-	}
+      for(int j = i; j < strlen(cd.buffer); j++){
+	cd.c_msg[j-i] = cd.buffer[j+1];
       }
       break;
     }
@@ -103,7 +94,7 @@ int read(){
     i++;
   }
 
-    printf("%s\n", cd.buffer);
+  printf("%s\n", cd.buffer);
 }
 
 int makeMove(){
@@ -138,9 +129,9 @@ int main(int argc, char *argv[]) {
   // while (!gd.done) {
 
     read();
-    std::cout << cd.type;
+    // std::cout << cd.type;
     if(cd.strType == "[BOARD]"){
-      std::cout << "Board";
+      // std::cout << "Board";
       printBoard();
     }
   //   move();
