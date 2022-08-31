@@ -30,14 +30,15 @@ public:
   int sock = 0, valread, client_fd;
   struct sockaddr_in serv_addr;
   char buffer[1024] = {0}, message[1024] = {0}, type[1024] = {0};
+  std::string msg, strType;
 };
 
 GameData gd;
 ClientData cd;
 
 int printBoard() {
-  for (int i = 0; i < sizeof(gd.board); i++) {
-    std::cout << gd.board[i];
+  for (int i = 0; i < 9; i++) {
+    std::cout << cd.buffer[i];
     if (i == 2 || i == 5 || i == 8) {
       std::cout << "\n";
     }
@@ -80,14 +81,29 @@ int read(){
   cd.valread = read(cd.sock, cd.buffer, 1024);
   bool done = false;
   int i = 0;
+  char msg[1024];
   while(!done){
     if(cd.buffer[i] == ' '){
+      while (!done) {
+	cd.msg += cd.buffer[i];
+	msg[i] = cd.buffer[i];
+	i++;
+
+	if(cd.buffer[i] == ' '){
+	  for(int i = 0; i < 1024; i++){
+	    cd.buffer[i] = msg[i];
+	  }
+	  break;
+	}
+      }
       break;
     }
     cd.type[i] = cd.buffer[i];
+    cd.strType += cd.buffer[i];
     i++;
   }
-  // printf("%s\n", cd.buffer);
+
+    printf("%s\n", cd.buffer);
 }
 
 int makeMove(){
@@ -120,11 +136,15 @@ int main(int argc, char *argv[]) {
 
   gd.done = false;
   // while (!gd.done) {
-  //   printBoard();
+
+    read();
+    std::cout << cd.type;
+    if(cd.strType == "[BOARD]"){
+      std::cout << "Board";
+      printBoard();
+    }
   //   move();
   // }
-  read();
-  printf("\n%s", cd.type);
   // closing the connected socket
   close(cd.client_fd);
   return 0;
