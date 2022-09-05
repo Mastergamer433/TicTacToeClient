@@ -12,10 +12,10 @@ SOURCE_HEADERS := $(wildcard $(SOURCE_DIR)/*.h)
 OBJS := $(patsubst $(SOURCE_DIR)/%.cpp,$(OBJS_DIR)/client/%.o,$(SOURCE_FILES))
 
 $(EXEC): $(OBJS)
+	mkdir $(OBJS_DIR)/client -p
 	$(CXX) $(OBJS) $(CXXFLAGS) $(LINKFLAGS) -o $(BUILD_DIR)/$(EXEC)
 
 $(OBJS_DIR)/client/%.o : $(SOURCE_DIR)/%.cpp
-	mkdir $(OBJS_DIR)/client
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 #Files to be compiled
