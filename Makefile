@@ -15,6 +15,8 @@ $(EXEC): $(OBJS)
 	$(CXX) $(OBJS) $(CXXFLAGS) $(LINKFLAGS) -o $(BUILD_DIR)/$(EXEC)
 
 $(OBJS_DIR)/client/%.o : $(SOURCE_DIR)/%.cpp
+	mkdir $(OBJS_DIR)
+	mkdir $(BUILD_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 #Files to be compiled
