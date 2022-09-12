@@ -126,16 +126,16 @@ int main(int argc, char *argv[]) {
   client();
 
   gd.done = false;
-  // while (!gd.done) {
+  while (!gd.done) {
 
     read();
     // std::cout << cd.type;
     if(cd.strType == "[BOARD]"){
-      // std::cout << "Board";
+      std::cout << "Board";
       printBoard();
     }
-  //   move();
-  // }
+    move();
+  }
   // closing the connected socket
   close(cd.client_fd);
   return 0;
