@@ -86,6 +86,7 @@ int read(){
 
       for(int j = i; j < strlen(cd.buffer); j++){
 	cd.c_msg[j-i] = cd.buffer[j+1];
+	cd.msg = cd.buffer[j+1];
       }
       break;
     }
@@ -93,28 +94,30 @@ int read(){
     cd.strType += cd.buffer[i];
     i++;
   }
-
-  printf("%s\n", cd.buffer);
 }
 
 int makeMove(){
   std::string m = std::string("[MOVE] ") + std::string(gd.in);
   write(m.c_str());
+  read();
+  return 0;
 }
 
 int move() {
   bool invalidMove = true;
+  std::cout << "move it";
   while (invalidMove) {
     std::cout << "It's your turn: ";
     std::cin >> gd.in[0];
-    int err = makeMove();
-    if (err != 0) {
+    makeMove();
+    if(cd.strType == "[!MOVE]"){
+      int err = std::stoi(cd.msg);
       std::cout << "Error while making move: " << err << "\n";
       switch (err) {
       case 1:
         std::cout << "You made an invalid move... Try again.\n";
       }
-    } else {
+    } else if(cd.strType == "[MOVE]" && cd.msg == "done") {
       invalidMove = false;
     }
   }
@@ -127,14 +130,15 @@ int main(int argc, char *argv[]) {
 
   gd.done = false;
   while (!gd.done) {
-
     read();
-    // std::cout << cd.type;
+    std::cout << cd.strType;
+    std::cout << cd.msg;
     if(cd.strType == "[BOARD]"){
       std::cout << "Board";
       printBoard();
+    } else if(cd.strType == "[DOMOVE]"){
+      move();
     }
-    move();
   }
   // closing the connected socket
   close(cd.client_fd);
